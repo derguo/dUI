@@ -195,7 +195,6 @@
     derguo.whichBrowser = showMatchPage();
 
     window.derguo = window.$who = derguo;
-
-    
+    console.log();
 
 })(window,document,undefined);
