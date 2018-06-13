@@ -4,5 +4,9 @@
  */
 'use strict';
 (function(){
+    function a() {
+
+    }
     return false;
+
 })();
