@@ -3,9 +3,32 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<script src="http://ting.wifi.rising.cn/Scripts/jquery-1.12.4.min.js"></script>
-<script src="deiguoui.js"></script>
-<body>
 
+<script src="http://ting.wifi.rising.cn/Scripts/jquery-1.12.4.min.js"></script>
+<script src="testUI.js"></script>
+<!--<script src="deiguoui.js"></script>-->
+<style>
+    #box{width: 100%;height: 500px;}
+</style>
+<body>
+<div id='box'>adsf</div>
+<div></div>
+<script>
+    var map = $("#box").addMap($.mapTypes.gaode,{
+        mapZoom:15,
+        centerPoint:{longitude:116.397428,latitude:39.90923},
+        points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
+    });
+    console.log("---------------------------");
+    console.log($('div').each(function (index,elment) {
+      console.log(index);
+      console.log(elment);
+      console.log(this == elment);
+    }));
+
+    $(window).resize(function (e) {
+        console.log(e);
+    });
+</script>
 </body>
 </html>
