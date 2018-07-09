@@ -21,9 +21,9 @@
 
     var qqMap = $.extend(new mapInterface(),{
         init:function () {
-            var myLatlng = new qq.maps.LatLng(-34.397, 150.644);
+            var myLatlng = new qq.maps.LatLng(39.916527,116.397128);
             var myOptions = {
-                zoom: 8,
+                zoom: 15,
                 center: myLatlng,
                 mapTypeId: qq.maps.MapTypeId.ROADMAP
             }
