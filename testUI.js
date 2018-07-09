@@ -14,16 +14,16 @@
     var baiduMap = $.extend(new mapInterface(),{
         init:function () {
             this.obj = new BMap.Map(this.info.container);
-            var point = new BMap.Point(116.404, 39.915);
-            this.obj.centerAndZoom(point, 15);
+            var point = new BMap.Point(this.info.centerPoint.longitude, this.info.centerPoint.latitude);
+            this.obj.centerAndZoom(point, this.info.mapZoom);
         }
     });
 
     var qqMap = $.extend(new mapInterface(),{
         init:function () {
-            var myLatlng = new qq.maps.LatLng(39.916527,116.397128);
+            var myLatlng = new qq.maps.LatLng(this.info.centerPoint.latitude,this.info.centerPoint.longitude);
             var myOptions = {
-                zoom: 15,
+                zoom: this.info.mapZoom,
                 center: myLatlng,
                 mapTypeId: qq.maps.MapTypeId.ROADMAP
             }
@@ -39,8 +39,8 @@
             }
             this.obj = new AMap.Map(this.info.container, {
                 resizeEnable: true,
-                zoom:15,
-                center: [116.397428, 39.90923]
+                zoom:this.info.mapZoom,
+                center: [this.info.centerPoint.longitude, this.info.centerPoint.latitude]
             });
         }
     });
@@ -61,6 +61,7 @@
             throw new Error("暂不支持同时向多个容器添加地图。也暂不支持用一个页面加载多个地图，或者容器id不存在");
 
         mapType.mapObj.info.container = this.attr("id");
+        $.extend(mapType.mapObj.info,info);
         $.map = mapType.mapObj;
 
         $.getScript(mapType.api+"&callback=$.map.init");
