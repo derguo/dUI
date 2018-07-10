@@ -60,7 +60,10 @@
                 mapObj:"AMap",
                 api:"https://webapi.amap.com/maps?v=1.4.8"}
         },
-        maps:{}
+        maps:{},
+        addMapApi:function (mapType,mapTypeInfo) {
+            $.mapTypes[mapType] = mapTypeInfo;
+        }
     });
 
     jQuery.fn.addMap = function (mapType,info) {
