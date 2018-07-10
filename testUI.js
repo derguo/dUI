@@ -67,6 +67,10 @@
         maps:{},
         addMapApi:function (mapType,mapTypeInfo) {
             $.mapTypes[mapType] = mapTypeInfo;
+            for(var mapKey in mapTypeInfo.mapType){
+                //这里添加判断新添加的地图插件是否满足接口（接口是否实现）。
+            }
+
         }
     });
 
