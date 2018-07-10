@@ -1,11 +1,15 @@
 /**
- * Author:Administrator
+ * Author:wangzhiguo
  * Date:2018/7/6 15:20
  */
 (function () {
 
     function mapInterface() {
-        this.info = {};
+        this.info = {
+            mapZoom:15,
+            centerPoint:{longitude:116.397428,latitude:39.90923},
+            points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
+        };
         this.Obj = null;
         this.mapInit = $.noop;
         this.addPoint = $.noop;
