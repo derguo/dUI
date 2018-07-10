@@ -11,35 +11,21 @@
     #box,#box2,#box3{width: 100%;height: 500px;}
 </style>
 <body>
-<button value="高德地图" onclick="gaode()">高德地图</button>
-<button value="腾讯地图" onclick="tx()">腾讯地图</button>
-<button value="百度地图" onclick="baidu()">百度地图</button>
 <div id='box'>aaaaaa</div>
-<div id="box2">bbbbbb</div>
-<div id="box3">cccccc</div>
-<div></div>
 <script>
-    function gaode() {
-        $("#box").addMap($.mapTypes.gaode,{
-            mapZoom:15,
-            centerPoint:{longitude:116.397428,latitude:39.90923},
-            points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
-        });
+    for(var mt in $.mapTypes){
+        $("body").append($("<button>"+$.mapTypes[mt].tip+"</button>").on("click",(function (maptype) {
+            return function(){
+                $("#box").addMap(maptype,{
+                    mapZoom:15,
+                    centerPoint:{longitude:116.397428,latitude:39.90923},
+                    points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
+                });
+            }
+
+        })($.mapTypes[mt])));
     }
-    function tx() {
-        $("#box").addMap($.mapTypes.qq,{
-            mapZoom:15,
-            centerPoint:{longitude:116.397428,latitude:39.90923},
-            points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
-        });
-    }
-    function baidu() {
-        $("#box").addMap($.mapTypes.baidu,{
-            mapZoom:15,
-            centerPoint:{longitude:116.397428,latitude:39.90923},
-            points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
-        });
-    }
+
 
     // console.log("---------------------------");
     // console.log($('div').each(function (index,elment) {
