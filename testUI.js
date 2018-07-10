@@ -7,37 +7,34 @@
     function mapInterface() {
         this.info = {};
         this.Obj = null;
-        this.init = $.noop;
+        this.mapInit = $.noop;
         this.addPoint = $.noop;
+        this.container = null;
     }
 
     var baiduMap = $.extend(new mapInterface(),{
-        init:function () {
-            this.obj = new BMap.Map(this.info.container);
+        mapInit:function () {
+            this.obj = new BMap.Map(this.info.container.id);
             var point = new BMap.Point(this.info.centerPoint.longitude, this.info.centerPoint.latitude);
             this.obj.centerAndZoom(point, this.info.mapZoom);
         }
     });
 
     var qqMap = $.extend(new mapInterface(),{
-        init:function () {
+        mapInit:function () {
             var myLatlng = new qq.maps.LatLng(this.info.centerPoint.latitude,this.info.centerPoint.longitude);
             var myOptions = {
                 zoom: this.info.mapZoom,
                 center: myLatlng,
                 mapTypeId: qq.maps.MapTypeId.ROADMAP
-            }
-            this.obj = new qq.maps.Map(document.getElementById(this.info.container), myOptions);
+            };
+            this.obj = new qq.maps.Map(document.getElementById(this.info.container.id), myOptions);
         }
     });
 
     var gaodeMap = $.extend(new mapInterface(),{
-        init:function () {
-            if(this == window){
-                $.map.init();
-                return;
-            }
-            this.obj = new AMap.Map(this.info.container, {
+        mapInit:function () {
+            this.obj = new AMap.Map(this.info.container.id, {
                 resizeEnable: true,
                 zoom:this.info.mapZoom,
                 center: [this.info.centerPoint.longitude, this.info.centerPoint.latitude]
@@ -47,25 +44,51 @@
 
     jQuery.extend({
         mapTypes:{
-            baidu:{mapObj:baiduMap,api:"https://api.map.baidu.com/api?v=3.0&ak=lSyBkQb06bczAu34h2VwbiWlxOkAkPzd"},
-            qq:{mapObj:qqMap,api:"https://map.qq.com/api/js?v=2.exp"},
-            gaode:{mapObj:gaodeMap,api:"https://webapi.amap.com/maps?v=1.4.8"}
+            baidu:{
+                tip:"百度地图",
+                mapType:baiduMap,
+                mapObj:"BMap",
+                api:"https://api.map.baidu.com/api?v=3.0&ak=lSyBkQb06bczAu34h2VwbiWlxOkAkPzd"},
+            qq:{
+                tip:"腾讯地图",
+                mapType:qqMap,
+                mapObj:"qq.maps",
+                api:"https://map.qq.com/api/js?v=2.exp"},
+            gaode:{
+                tip:"高德地图",
+                mapType:gaodeMap,
+                mapObj:"AMap",
+                api:"https://webapi.amap.com/maps?v=1.4.8"}
         },
-        map:null
+        maps:{}
     });
 
     jQuery.fn.addMap = function (mapType,info) {
         if(!(mapType == $.mapTypes.baidu || mapType == $.mapTypes.qq || mapType == $.mapTypes.gaode))
             throw new Error("地图类型错误！请选择$.mapTypes对象中的属性，作为参数");
-        if(this.length != 1 && $.map == null && this.attr("id") == undefined)
-            throw new Error("暂不支持同时向多个容器添加地图。也暂不支持用一个页面加载多个地图，或者容器id不存在");
 
-        mapType.mapObj.info.container = this.attr("id");
-        $.extend(mapType.mapObj.info,info);
-        $.map = mapType.mapObj;
+        if (this.length != 1 || this[0].id == undefined) return null;//只支持带有id的唯一容器。
 
-        $.getScript(mapType.api+"&callback=$.map.init");
+        this.empty();
 
+        mapType.mapType.info.container =  this[0];
+        $.extend(mapType.mapType.info,info);
+
+        $.maps[this[0].id] = $.extend(this,mapType.mapType);
+
+        if(window[mapType.mapObj]){
+            this.mapInit();
+        }else{
+            window[this[0].id] = (function (c) {
+                return function () {
+                    window[c[0].id] = null;
+                    c.mapInit();
+                }
+            })(this);
+
+            //$.getScript(mapType.api+"&callback=$.map."+this[0].id+".init");//qq baidu可以 高德直接.call(window)
+            $.getScript(mapType.api+"&callback="+this[0].id);
+        }
         return this;//$.map;
     };
 })();
