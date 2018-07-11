@@ -75,7 +75,7 @@
     $.addMapApi("qq",{
         tip:"腾讯地图",
         mapType:qqMap,
-        mapObj:"qq.maps",
+        mapObj:"qq",
         api:"https://map.qq.com/api/js?v=2.exp"
     });
     $.addMapApi("gaode",{
