@@ -10,10 +10,10 @@
             centerPoint:{longitude:116.397428,latitude:39.90923},
             points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
         };
-        this.Obj = null;
+        //this.Obj = null;
         this.mapInit = $.noop;
         this.addPoint = $.noop;
-        this.container = null;
+        //this.container = null;
     }
 
     var baiduMap = $.extend(new mapInterface(),{
@@ -47,35 +47,68 @@
     });
 
     jQuery.extend({
-        mapTypes:{
-            baidu:{
-                tip:"百度地图",
-                mapType:baiduMap,
-                mapObj:"BMap",
-                api:"https://api.map.baidu.com/api?v=3.0&ak=lSyBkQb06bczAu34h2VwbiWlxOkAkPzd"},
-            qq:{
-                tip:"腾讯地图",
-                mapType:qqMap,
-                mapObj:"qq.maps",
-                api:"https://map.qq.com/api/js?v=2.exp"},
-            gaode:{
-                tip:"高德地图",
-                mapType:gaodeMap,
-                mapObj:"AMap",
-                api:"https://webapi.amap.com/maps?v=1.4.8"}
-        },
+        mapTypes:{},
         maps:{},
         addMapApi:function (mapType,mapTypeInfo) {
-            $.mapTypes[mapType] = mapTypeInfo;
-            for(var mapKey in mapTypeInfo.mapType){
-                //这里添加判断新添加的地图插件是否满足接口（接口是否实现）。
+            for(var t in $.mapTypes){
+                if (mapType == t){
+                    throw new Error("地图类型重名！");
+                }
             }
 
+            var judge = interfaceJudge(mapTypeInfo.mapType,new mapInterface());
+
+            if(judge.length > 0){
+                throw new Error("新地图"+mapType+"有没实现的方法、属性:"+judge.join(" , "));
+            }
+
+            $.mapTypes[mapType] = mapTypeInfo;
         }
     });
 
+    $.addMapApi("baidu",{
+        tip:"百度地图",
+        mapType:baiduMap,
+        mapObj:"BMap",
+        api:"https://api.map.baidu.com/api?v=3.0&ak=lSyBkQb06bczAu34h2VwbiWlxOkAkPzd"
+    });
+    $.addMapApi("qq",{
+        tip:"腾讯地图",
+        mapType:qqMap,
+        mapObj:"qq.maps",
+        api:"https://map.qq.com/api/js?v=2.exp"
+    });
+    $.addMapApi("gaode",{
+        tip:"高德地图",
+        mapType:gaodeMap,
+        mapObj:"AMap",
+        api:"https://webapi.amap.com/maps?v=1.4.8"
+    });
+    
+    function orNotAttr(AttrObj,obj) {
+        var r = false;
+        for(var an in obj){
+            if(AttrObj == obj[an]) {r = true; break;}
+        }
+        return r;
+    }
+
+    function interfaceJudge(obj,interfaceObj){
+        var r = [];
+        interfaceLabel:
+        for(var it in interfaceObj){
+            for(var ot in obj){
+                if(ot == it){
+                    continue interfaceLabel;
+                }
+            }
+            r.push(it);
+        }
+        return r;
+    }
+
     jQuery.fn.addMap = function (mapType,info) {
-        if(!(mapType == $.mapTypes.baidu || mapType == $.mapTypes.qq || mapType == $.mapTypes.gaode))
+        if(!orNotAttr(mapType,$.mapTypes))
             throw new Error("地图类型错误！请选择$.mapTypes对象中的属性，作为参数");
 
         if (this.length != 1 || this[0].id == undefined) return null;//只支持带有id的唯一容器。

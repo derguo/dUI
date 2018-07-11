@@ -13,6 +13,30 @@
 <body>
 <div id='box'>aaaaaa</div>
 <script>
+    var googleMap = {
+        info:{},
+        Obj:null,
+        mapInit:function () {
+            var myLatlng = new qq.maps.LatLng(this.info.centerPoint.latitude,this.info.centerPoint.longitude);
+            var myOptions = {
+                zoom: this.info.mapZoom,
+                center: myLatlng,
+                mapTypeId: qq.maps.MapTypeId.ROADMAP
+            };
+            this.obj = new qq.maps.Map(document.getElementById(this.info.container.id), myOptions);
+        },
+        addPoint:function () {
+
+        }
+    };
+
+    $.addMapApi("googleMap",{
+        tip:"谷歌地图",
+        mapType:googleMap,
+        mapObj:"qq.maps",
+        api:"https://map.qq.com/api/js?v=2.exp"
+    });
+
     for(var mt in $.mapTypes){
         $("body").append($("<button>"+$.mapTypes[mt].tip+"</button>").on("click",(function (maptype) {
             return function(){
@@ -22,10 +46,8 @@
                     points:[{longitude:116.397428,latitude:39.90923},{longitude:116.667428,latitude:39.11923}]
                 });
             }
-
         })($.mapTypes[mt])));
     }
-
 
     // console.log("---------------------------");
     // console.log($('div').each(function (index,elment) {
